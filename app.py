@@ -31,7 +31,7 @@ def webhook_received():
 
     try:
         event_data = event['data']
-        event_data_object = event['object']
+        event_data_object = event_data['object']
         # A subscription was created
         if event_type == 'invoice.paid' and \
                 event_data_object['billing_reason'] == 'subscription_create':
