@@ -60,12 +60,13 @@ def webhook_received():
                 event_data_object['cancel_at'] is None:
             print("user resubscribed to cancelled subscription")
 
+        # Unexpected event type
         else:
-            # Unexpected event type
             print('Unhandled event type {}'.format(event_type))
             print(json.dumps(event, indent=4))
+
+    # Unexpected event type
     except KeyError:
-        # Unexpected event type
         print('Unhandled event type {}'.format(event_type))
         print(json.dumps(event, indent=4))
         pass
