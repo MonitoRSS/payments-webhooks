@@ -30,37 +30,40 @@ def webhook_received():
     event_type = event['type']
     event_data = event['data']
 
-    # A subscription was created
-    if event_type == 'invoice.paid' and \
-            event_data['object']['billing_reason'] == 'subscription_create':
-        print("user made a new subscription")
+    try:
+        # A subscription was created
+        if event_type == 'invoice.paid' and \
+                event_data['object']['billing_reason'] == 'subscription_create':
+            print("user made a new subscription")
 
-    # A subscription was swapped to a different product/price
-    elif event_type == 'invoice.paid' and \
-            event_data['object']['billing_reason'] == 'subscription_update':
-        print("user changed their subscription plan")
+        # A subscription was swapped to a different product/price
+        elif event_type == 'invoice.paid' and \
+                event_data['object']['billing_reason'] == 'subscription_update':
+            print("user changed their subscription plan")
 
-    # A subscription advanced into a new period
-    elif event_type == 'invoice.paid' and \
-            event_data['object']['billing_reason'] == 'subscription_cycle':
-        print("user paid for a new month for a subscription")
+        # A subscription advanced into a new period
+        elif event_type == 'invoice.paid' and \
+                event_data['object']['billing_reason'] == 'subscription_cycle':
+            print("user paid for a new month for a subscription")
 
-    # A subscription was cancelled
-    elif event_type == 'customer.subscription.updated' and \
-            event_data['previous_attributes']['cancel_at'] is None and \
-            event_data['object']['cancel_at'] is not None:
+        # A subscription was cancelled
+        elif event_type == 'customer.subscription.updated' and \
+                event_data['previous_attributes']['cancel_at'] is None and \
+                event_data['object']['cancel_at'] is not None:
 
-        print("user cancelled subscription")
+            print("user cancelled subscription")
 
-    # A subscription was re-subscribed to after it was cancelled
-    elif event_type == 'customer.subscription.updated' and\
-            event_data['previous_attributes']['cancel_at'] is not None and \
-            event_data['object']['cancel_at'] is None:
-        print("user resubscribed to cancelled subscription")
+        # A subscription was re-subscribed to after it was cancelled
+        elif event_type == 'customer.subscription.updated' and\
+                event_data['previous_attributes']['cancel_at'] is not None and \
+                event_data['object']['cancel_at'] is None:
+            print("user resubscribed to cancelled subscription")
 
-    else:
-        # Unexpected event type
-        print('Unhandled event type {}'.format(event['type']))
-        print(json.dumps(event, indent=4))
+        else:
+            # Unexpected event type
+            print('Unhandled event type {}'.format(event['type']))
+            print(json.dumps(event, indent=4))
+    except KeyError:
+        pass
 
     return jsonify(success=True)
