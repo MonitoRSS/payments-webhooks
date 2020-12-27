@@ -1,0 +1,47 @@
+{
+    "id": "evt_1I2mb1HMtY1VBRBjYJwbnMMY",
+    "object": "event",
+    "api_version": "2020-08-27",
+    "created": 1609026891,
+    "data": {
+        "object": {
+            "id": "cs_test_a1bxAzOUcojfOdQGzBpDEDSUYVfdnZ9EAmm6zDuPu6jPBN0ReBKIImRlkD",
+            "object": "checkout.session",
+            "allow_promotion_codes": null,
+            "amount_subtotal": 100,
+            "amount_total": 100,
+            "billing_address_collection": null,
+            "cancel_url": "http://localhost:3000/dashboard",
+            "client_reference_id": null,
+            "currency": "usd",
+            "customer": "cus_Ie4CO87cWz9h1Q",
+            "customer_email": null,
+            "livemode": false,
+            "locale": null,
+            "metadata": {},
+            "mode": "subscription",
+            "payment_intent": null,
+            "payment_method_types": [
+                "card"
+            ],
+            "payment_status": "paid",
+            "setup_intent": null,
+            "shipping": null,
+            "shipping_address_collection": null,
+            "submit_type": null,
+            "subscription": "sub_Ie4kFfwdRqefV3",
+            "success_url": "http://localhost:3000/dashboard?session_id={CHECKOUT_SESSION_ID}",
+            "total_details": {
+                "amount_discount": 0,
+                "amount_tax": 0
+            }
+        }
+    },
+    "livemode": false,
+    "pending_webhooks": 1,
+    "request": {
+        "id": "req_ciTuD82pAkBr1g",
+        "idempotency_key": null
+    },
+    "type": "checkout.session.completed"
+}
