@@ -22,17 +22,14 @@ def webhook_received():
     payload = request.data
 
     try:
-        event = json.loads(payload)
-    except Exception as e:
-        print('⚠️  Webhook error while parsing basic request.' + str(e))
-        return jsonify(success=True)
-
-    try:
         sig_header = request.headers.get('stripe-signature')
         event = stripe.Webhook.construct_event(
             payload, sig_header, STRIPE_WEBHOOK_SECRET)
     except stripe.error.SignatureVerificationError as e:
         print('⚠️  Webhook signature verification failed.' + str(e))
+        return jsonify(success=True)
+    except Exception as e:
+        print('⚠️  Webhook error while parsing basic request.' + str(e))
         return jsonify(success=True)
 
     event_type = event['type']
