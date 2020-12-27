@@ -37,29 +37,33 @@ def webhook_received():
     try:
         event_data = event['data']
         event_data_object = event_data['object']
-        # A subscription was created
+        # A subscription was created, apply benefits
         if event_type == 'invoice.paid' and \
                 event_data_object['billing_reason'] == 'subscription_create':
             print("user made a new subscription")
 
-        # A subscription was swapped to a different product/price
+        # A subscription was swapped to a different product/price, swap benefits
         elif event_type == 'invoice.paid' and \
                 event_data_object['billing_reason'] == 'subscription_update':
             print("user changed their subscription plan")
 
-        # A subscription advanced into a new period
+        # A subscription advanced into a new period, update end date of benefits
         elif event_type == 'invoice.paid' and \
                 event_data_object['billing_reason'] == 'subscription_cycle':
             print("user paid for a new month for a subscription")
 
-        # A subscription was cancelled
+        # A subscription renewal failed, cancel benefits
+        elif event_type == 'invoice.payment_failed':
+            print("user's payment failed for subscription")
+
+        # A subscription was cancelled, cancel benefits
         elif event_type == 'customer.subscription.updated' and \
                 event_data['previous_attributes']['cancel_at'] is None and \
                 event_data_object['cancel_at'] is not None:
 
             print("user cancelled subscription")
 
-        # A subscription was re-subscribed to after it was cancelled
+        # A subscription was re-subscribed to after it was cancelled, apply benefits
         elif event_type == 'customer.subscription.updated' and\
                 event_data['previous_attributes']['cancel_at'] is not None and \
                 event_data_object['cancel_at'] is None:
@@ -73,7 +77,7 @@ def webhook_received():
     # Unexpected event type
     except KeyError:
         print('Unhandled event type {}'.format(event_type))
-        print(json.dumps(event, indent=4))
+        # print(json.dumps(event, indent=4))
         pass
 
     return jsonify(success=True)
