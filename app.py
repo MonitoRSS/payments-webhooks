@@ -30,7 +30,7 @@ def webhook_received():
         event = validate_webhook_payload(request)
     except Exception as e:
         print('Failed to validate webhook payload' + str(e))
-        return jsonify(success=False)
+        return jsonify(success=0)
 
     event_type = event['type']
 
@@ -82,6 +82,5 @@ def webhook_received():
     except KeyError:
         print('Unhandled event type {}'.format(event_type))
         # print(json.dumps(event, indent=4))
-        pass
 
-    return jsonify(success=True)
+    return jsonify(success=1)
