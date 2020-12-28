@@ -2,7 +2,14 @@ import json
 import stripe
 from flask import Flask, request, jsonify
 from utils.constants import STRIPE_SECRET_API_KEY, STRIPE_WEBHOOK_SECRET
-
+from utils.validate_webhook_payload import validate_webhook_payload
+from events import (
+    NewSubscription,
+    RenewedSubscription,
+    SwappedSubscription,
+    CancelledSubscription,
+    RestartedCancelledSubscription
+)
 stripe.api_key = STRIPE_SECRET_API_KEY
 
 app = Flask(__name__)
@@ -19,17 +26,10 @@ def health():
 def webhook_received():
     event = None
 
-    payload = request.data
-
     try:
-        sig_header = request.headers.get('stripe-signature')
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, STRIPE_WEBHOOK_SECRET)
-    except stripe.error.SignatureVerificationError as e:
-        print('⚠️  Webhook signature verification failed.' + str(e))
-        return jsonify(success=True)
+        event = validate_webhook_payload(request)
     except Exception as e:
-        print('⚠️  Webhook error while parsing basic request.' + str(e))
+        print('Failed to validate webhook payload' + str(e))
         return jsonify(success=True)
 
     event_type = event['type']
@@ -41,16 +41,19 @@ def webhook_received():
         if event_type == 'invoice.paid' and \
                 event_data_object['billing_reason'] == 'subscription_create':
             print("user made a new subscription")
+            NewSubscription(event)
 
         # A subscription was swapped to a different product/price, swap benefits
         elif event_type == 'invoice.paid' and \
                 event_data_object['billing_reason'] == 'subscription_update':
             print("user changed their subscription plan")
+            SwappedSubscription(event)
 
         # A subscription advanced into a new period, update end date of benefits
         elif event_type == 'invoice.paid' and \
                 event_data_object['billing_reason'] == 'subscription_cycle':
             print("user paid for a new month for a subscription")
+            RenewedSubscription(event)
 
         # A subscription renewal failed, cancel benefits
         elif event_type == 'invoice.payment_failed':
@@ -60,14 +63,15 @@ def webhook_received():
         elif event_type == 'customer.subscription.updated' and \
                 event_data['previous_attributes']['cancel_at'] is None and \
                 event_data_object['cancel_at'] is not None:
-
             print("user cancelled subscription")
+            CancelledSubscription(event)
 
         # A subscription was re-subscribed to after it was cancelled, apply benefits
         elif event_type == 'customer.subscription.updated' and\
                 event_data['previous_attributes']['cancel_at'] is not None and \
                 event_data_object['cancel_at'] is None:
             print("user resubscribed to cancelled subscription")
+            RestartedCancelledSubscription(event)
 
         # Unexpected event type
         else:
