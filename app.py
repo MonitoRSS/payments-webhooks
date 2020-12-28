@@ -1,7 +1,7 @@
 import json
 import stripe
 from flask import Flask, request, jsonify
-from utils.constants import STRIPE_SECRET_API_KEY, STRIPE_WEBHOOK_SECRET
+from utils.constants import STRIPE_SECRET_API_KEY
 from utils.validate_webhook_payload import validate_webhook_payload
 from events import (
     NewSubscription,
@@ -30,7 +30,7 @@ def webhook_received():
         event = validate_webhook_payload(request)
     except Exception as e:
         print('Failed to validate webhook payload' + str(e))
-        return jsonify(success=True)
+        return jsonify(success=False)
 
     event_type = event['type']
 
