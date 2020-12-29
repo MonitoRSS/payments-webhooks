@@ -1,5 +1,5 @@
 from db.BenefitPackage import BenefitPackage
-from db.mongo import mongo_client, MONGODB_DATABASE
+from db.mongo import mongo_db, MONGODB_DATABASE
 from db.engine import Base, Session, engine
 
 session = None
@@ -11,12 +11,12 @@ def setup_module():
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     session = Session()
-    mongo_client.drop_database(MONGODB_DATABASE)
+    mongo_db.drop_database(MONGODB_DATABASE)
 
 
 def teardown_module():
     Base.metadata.drop_all(engine)
-    mongo_client.drop_database(MONGODB_DATABASE)
+    mongo_db.drop_database(MONGODB_DATABASE)
     session.close()
 
 
