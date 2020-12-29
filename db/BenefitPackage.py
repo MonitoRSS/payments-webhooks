@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Integer, Boolean
 from db.engine import Base
+from db.StripeUser import StripeUser
 
 
 class BenefitPackage(Base):
@@ -18,3 +19,7 @@ class BenefitPackage(Base):
                 f'extra_feeds={self.extra_feeds}, '
                 f'allow_webhook={self.allow_webhook}, '
                 f'refresh_rate_seconds={self.refresh_rate_seconds})')
+
+    @staticmethod
+    def get_package_for_product(session, product_id: str):
+        return session.query(BenefitPackage).filter_by(stripe_product_id=product_id).first()
