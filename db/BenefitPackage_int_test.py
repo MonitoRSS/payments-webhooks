@@ -1,34 +1,27 @@
 from db.BenefitPackage import BenefitPackage
 from db.mongo import mongo_db, MONGODB_DATABASE
-from db.engine import Base, Session, engine
+from app import postgres_db
 
-session = None
 stripe_product_id = '123'
 
 
 def setup_module():
-    global session
-    Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
-    session = Session()
+    postgres_db.drop_all()
+    postgres_db.create_all()
     mongo_db.drop_database(MONGODB_DATABASE)
 
 
 def teardown_module():
-    Base.metadata.drop_all(engine)
+    postgres_db.drop_all()
     mongo_db.drop_database(MONGODB_DATABASE)
-    session.close()
 
 
 def test_get_package_for_product():
-    global session
     test_package = BenefitPackage(stripe_product_id=stripe_product_id,
                                   extra_feeds=0, allow_webhook=True, refresh_rate_seconds=10)
-    session.add(test_package)
-
-    session.commit()
+    postgres_db.session.add(test_package)
+    postgres_db.session.commit()
     found_package = BenefitPackage.get_package_for_product(
-        session,
         stripe_product_id
     )
     assert found_package is not None

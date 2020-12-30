@@ -5,10 +5,9 @@ from events import (
     RestartedCancelledSubscription,
     CancelledSubscription
 )
-from utils.validate_webhook_payload import validate_webhook_payload
 from flask import Blueprint, request, jsonify
 import json
-
+from utils import validate_webhook_payload
 api = Blueprint('api', __name__)
 
 
@@ -19,12 +18,13 @@ def health():
     }
 
 
-@api.route("/webhook")
+@api.route("/webhook", methods=['POST'])
 def webhook_received():
     event = None
 
     try:
-        event = validate_webhook_payload(request)
+        event = validate_webhook_payload.validate_webhook_payload(
+            request)
     except Exception as e:
         print('Failed to validate webhook payload' + str(e))
         return jsonify(success=0)

@@ -1,16 +1,21 @@
-import app as flaskapp
+from app import app as flaskapp
 from pytest import fixture, MonkeyPatch
 
 
 @fixture
 def client():
-    flaskapp.app.config['TESTING'] = True
-    return flaskapp.app.test_client()
+    flaskapp.config['TESTING'] = True
+    return flaskapp.test_client()
 
 
 @fixture
 def monkeypatch():
     return MonkeyPatch()
+
+
+def test_health(client):
+    res = client.get('/api/health')
+    assert res.get_json() == {"ok": 1}
 
 
 def test_processing_error(client):
@@ -19,7 +24,7 @@ def test_processing_error(client):
     In reality, it doesn't matter since it's still returning a 200 status to Stripe, but
     this is just for testing purposes
     """
-    res = client.post('/webhook', json={
+    res = client.post('/api/webhook', json={
         "type": "ooglaboo"
     })
     assert res.get_json() == {"success": 0}
@@ -33,10 +38,10 @@ def test_unhandled_event(client, monkeypatch):
         return {
             "type": "ooglaboo"
         }
-
-    monkeypatch.setattr('app.validate_webhook_payload',
-                        validate_webhook_payload)
-    res = client.post('/webhook', json={
+    mp = MonkeyPatch()
+    mp.setattr('utils.validate_webhook_payload.validate_webhook_payload',
+               validate_webhook_payload)
+    res = client.post('/api/webhook', json={
         "type": "ooglaboo"
     })
     assert res.get_json() == {"success": 1}
