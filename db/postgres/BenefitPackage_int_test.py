@@ -1,4 +1,4 @@
-from db.BenefitPackage import BenefitPackage
+from db.postgres.BenefitPackage import BenefitPackage
 from db.mongo import mongo_db, MONGODB_DATABASE
 from app import postgres_db
 

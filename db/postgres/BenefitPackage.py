@@ -1,4 +1,4 @@
-from db.StripeUser import StripeUser
+from db.postgres.StripeUser import StripeUser
 from app import postgres_db
 
 
