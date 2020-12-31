@@ -2,7 +2,12 @@ from db.postgres.StripeUser import StripeUser
 from db.postgres.BenefitPackage import BenefitPackage
 from db.mongo import Subscriber, mongo_db, MONGODB_DATABASE
 import datetime
-from services.products import apply_to_customer, create_for_customer, delete_from_customer, swap_for_benefit
+from services.products import (
+    apply_to_customer,
+    create_for_customer,
+    delete_from_customer,
+    swap_for_benefit
+)
 from app import postgres_db
 
 
@@ -97,7 +102,7 @@ def test_subscriber_is_created_after_applied():
 
 def test_product_is_deleted():
     """
-    While applying a product to a customer, if the equivalent subscriber does not exist, create it
+    Test that deleting a product from a subscriber works correctly
     """
     stripe_customer_id = 'id4'
     product_id = 'product-id4'
@@ -121,7 +126,7 @@ def test_product_is_deleted():
 
 def test_product_is_swapped():
     """
-    While applying a product to a customer, if the equivalent subscriber does not exist, create it
+    Test that swapping an old product for a new product on a subscriber works correctly
     """
     stripe_customer_id = 'id4'
     old_product_id = 'product-id4'
@@ -140,7 +145,11 @@ def test_product_is_swapped():
     }]).save()
     # Set up the new product that will replace the existing one
     benefit_package = BenefitPackage(
-        stripe_product_id=new_product_id, extra_feeds=10, allow_webhook=True, refresh_rate_seconds=1)
+        stripe_product_id=new_product_id,
+        extra_feeds=10,
+        allow_webhook=True,
+        refresh_rate_seconds=1
+    )
     postgres_db.session.add(benefit_package)
     postgres_db.session.commit()
     # Apply the swap
