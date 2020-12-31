@@ -81,7 +81,8 @@ def delete_from_customer(customer_id: str, product_id: str):
         subscriber = get_subscriber(customer_id)
     except DoesNotExist:
         print(
-            f"Skipping product deletion of {product_id} for customer {customer_id} because it doesn't exist")
+            f"Skipping product deletion of {product_id} for customer {customer_id} "
+            "because it doesn't exist")
         return
     except Exception as e:
         print(e)
