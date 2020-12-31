@@ -37,6 +37,7 @@ class SubscriberProduct(EmbeddedDocument):
 
 
 class Subscriber(Document):
+    # _id is the stripe customer id
     _id = StringField(required=True)
     discordId = StringField(required=True)
     lifetimePaid = FloatField(default=0)
