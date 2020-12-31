@@ -91,3 +91,35 @@ def delete_from_customer(customer_id: str, product_id: str):
             product for product in subscriber.products if product.productId != product_id
         ]
         subscriber.save()
+
+
+def swap_for_benefit(customer_id: str, old_product_id: str, new_product_id, end_date):
+    try:
+        subscriber = get_subscriber(customer_id)
+        benefits = get_product_benefits(new_product_id)
+    except DoesNotExist:
+        create_for_customer(customer_id, new_product_id, end_date)
+    except Exception as e:
+        print(e)
+        raise e
+    else:
+        product_to_add = SubscriberProduct(
+            productId=new_product_id,
+            quantity=1,
+            endDate=end_date,
+            benefits={
+                "extraFeeds": benefits.extra_feeds,
+                "webhookAccess": benefits.allow_webhook,
+                "refreshRateSeconds": benefits.refresh_rate_seconds
+            }
+        )
+
+        for index in range(len(subscriber.products)):
+            product = subscriber.products[index]
+            if product.productId == old_product_id:
+                subscriber.products[index] = product_to_add
+                subscriber.save()
+                return
+        print(
+            f"Failed to swap customer {customer_id} product {old_product_id} for {new_product_id} "
+            f"because old product does not exist")
