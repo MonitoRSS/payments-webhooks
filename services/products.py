@@ -99,7 +99,7 @@ def swap_products_for_customer(customer_id: str, old_product_id: str, new_produc
         subscriber = get_subscriber(customer_id)
         benefits = get_product_benefits(new_product_id)
     except DoesNotExist:
-        create(customer_id, new_product_id, end_date)
+        create_product_for_customer(customer_id, new_product_id, end_date)
     except Exception as e:
         print(e)
         raise e
