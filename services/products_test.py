@@ -2,7 +2,7 @@ from db.postgres.StripeUser import StripeUser
 from db.postgres.BenefitPackage import BenefitPackage
 from db.mongo import Subscriber, mongo_db, MONGODB_DATABASE
 import datetime
-from services.products import apply_to_customer, create_for_customer
+from services.products import apply_to_customer, create_for_customer, delete_from_customer
 from app import postgres_db
 
 
@@ -93,3 +93,27 @@ def test_subscriber_is_created_after_applied():
     subscriber = Subscriber.objects().get(_id=stripe_customer_id)
     assert next(product for product in subscriber.products if product.productId ==
                 product_id) is not StopIteration
+
+
+def test_product_is_deleted():
+    """
+    While applying a product to a customer, if the equivalent subscriber does not exist, create it
+    """
+    stripe_customer_id = 'id4'
+    product_id = 'product-id4'
+    # Set up the subscriber and benefit package definition
+    Subscriber(_id=stripe_customer_id, discordId="1234", lifetimePaid=0, currency="usd", products=[{
+        "productId": product_id,
+        "quantity": 1,
+        "endDate": datetime.datetime.now(),
+        "benefits": {
+            "extraFeeds": 1,
+            "webhookAccess": True,
+            "refreshRateSeconds": 1
+        }
+    }]).save()
+    # Apply it to the subscriber
+    delete_from_customer(stripe_customer_id, product_id)
+    # Assert that it was correctly added
+    subscriber = Subscriber.objects().get(_id=stripe_customer_id)
+    assert len(subscriber.products) == 0

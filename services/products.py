@@ -74,3 +74,20 @@ def apply_to_customer(customer_id: str, product_id: str, end_date):
                 return
         subscriber.products.append(product_to_add)
         subscriber.save()
+
+
+def delete_from_customer(customer_id: str, product_id: str):
+    try:
+        subscriber = get_subscriber(customer_id)
+    except DoesNotExist:
+        print(
+            f"Skipping product deletion of {product_id} for customer {customer_id} because it doesn't exist")
+        return
+    except Exception as e:
+        print(e)
+        raise e
+    else:
+        subscriber.products = [
+            product for product in subscriber.products if product.productId != product_id
+        ]
+        subscriber.save()
