@@ -16,7 +16,7 @@ def get_product_benefits(product_id: str):
     return benefits
 
 
-def create_for_customer(customer_id: str, product_id: str, end_date):
+def create_product_for_customer(customer_id: str, product_id: str, end_date):
     try:
         discord_id = StripeUser.get_customer_discord_id(customer_id)
         if discord_id is None:
@@ -47,12 +47,12 @@ def create_for_customer(customer_id: str, product_id: str, end_date):
     pass
 
 
-def apply_to_customer(customer_id: str, product_id: str, end_date):
+def add_or_create_product_for_customer(customer_id: str, product_id: str, end_date):
     try:
         subscriber = get_subscriber(customer_id)
         benefits = get_product_benefits(product_id)
     except DoesNotExist:
-        create_for_customer(customer_id, product_id, end_date)
+        create(customer_id, product_id, end_date)
     except Exception as e:
         print(e)
         raise e
@@ -76,7 +76,7 @@ def apply_to_customer(customer_id: str, product_id: str, end_date):
         subscriber.save()
 
 
-def delete_from_customer(customer_id: str, product_id: str):
+def delete_product_from_customer(customer_id: str, product_id: str):
     try:
         subscriber = get_subscriber(customer_id)
     except DoesNotExist:
@@ -94,12 +94,12 @@ def delete_from_customer(customer_id: str, product_id: str):
         subscriber.save()
 
 
-def swap_for_benefit(customer_id: str, old_product_id: str, new_product_id, end_date):
+def swap_products_for_customer(customer_id: str, old_product_id: str, new_product_id, end_date):
     try:
         subscriber = get_subscriber(customer_id)
         benefits = get_product_benefits(new_product_id)
     except DoesNotExist:
-        create_for_customer(customer_id, new_product_id, end_date)
+        create(customer_id, new_product_id, end_date)
     except Exception as e:
         print(e)
         raise e

@@ -3,10 +3,10 @@ from db.postgres.BenefitPackage import BenefitPackage
 from db.mongo import Subscriber, mongo_db, MONGODB_DATABASE
 import datetime
 from services.products import (
-    apply_to_customer,
-    create_for_customer,
-    delete_from_customer,
-    swap_for_benefit
+    create_product_for_customer,
+    add_or_create_product_for_customer,
+    delete_product_from_customer,
+    swap_products_for_customer
 )
 from app import postgres_db
 
@@ -39,7 +39,7 @@ def test_subscriber_is_added_with_benefits():
     postgres_db.session.add(benefit_package)
     postgres_db.session.commit()
     # Apply it to the subscriber
-    create_for_customer(stripe_customer_id, product_id, end_date)
+    create_product_for_customer(stripe_customer_id, product_id, end_date)
     # Assert that it was correctly added
     subscriber = Subscriber.objects().get(_id=stripe_customer_id)
     assert next(product for product in subscriber.products if product.productId ==
@@ -69,7 +69,8 @@ def test_product_is_added_after_applied():
     postgres_db.session.add(benefit_package)
     postgres_db.session.commit()
     # Apply it to the subscriber
-    apply_to_customer(stripe_customer_id, product_id, end_date)
+    add_or_create_product_for_customer(
+        stripe_customer_id, product_id, end_date)
     # Assert that it was correctly added
     subscriber = Subscriber.objects().get(_id=stripe_customer_id)
     assert next(product for product in subscriber.products if product.productId ==
@@ -78,7 +79,8 @@ def test_product_is_added_after_applied():
 
 def test_subscriber_is_created_after_applied():
     """
-    While applying a product to a customer, if the equivalent subscriber does not exist, create it
+    While applying a product to a customer, if the equivalent subscriber does not exist,
+    create the subscriber with the product
     """
     stripe_customer_id = 'id2'
     product_id = 'product-id2'
@@ -93,7 +95,8 @@ def test_subscriber_is_created_after_applied():
     postgres_db.session.add(benefit_package)
     postgres_db.session.commit()
     # Apply it to the subscriber
-    apply_to_customer(stripe_customer_id, product_id, end_date)
+    add_or_create_product_for_customer(
+        stripe_customer_id, product_id, end_date)
     # Assert that it was correctly added
     subscriber = Subscriber.objects().get(_id=stripe_customer_id)
     assert next(product for product in subscriber.products if product.productId ==
@@ -118,8 +121,8 @@ def test_product_is_deleted():
         }
     }]).save()
     # Apply it to the subscriber
-    delete_from_customer(stripe_customer_id, product_id)
-    # Assert that it was correctly added
+    delete_product_from_customer(stripe_customer_id, product_id)
+    # Assert that it was swap_products_for_customer added
     subscriber = Subscriber.objects().get(_id=stripe_customer_id)
     assert len(subscriber.products) == 0
 
@@ -153,8 +156,8 @@ def test_product_is_swapped():
     postgres_db.session.add(benefit_package)
     postgres_db.session.commit()
     # Apply the swap
-    swap_for_benefit(stripe_customer_id, old_product_id,
-                     new_product_id, end_date)
+    swap_products_for_customer(stripe_customer_id, old_product_id,
+                               new_product_id, end_date)
     # Assert that it was correctly swapped
     subscriber = Subscriber.objects().get(_id=stripe_customer_id)
     assert subscriber.products[0].productId == new_product_id
