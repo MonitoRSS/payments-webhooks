@@ -122,5 +122,5 @@ def swap_for_benefit(customer_id: str, old_product_id: str, new_product_id, end_
                 subscriber.save()
                 return
         print(
-            f"Failed to swap customer {customer_id} product {old_product_id} for {new_product_id} "
+            f"Failed to swap customer {customer_id} product {old_product_id} for {product_to_add} "
             f"because old product does not exist")
