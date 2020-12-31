@@ -25,7 +25,7 @@ def test_subscriber_is_added_with_benefits():
     product_id = 'product-id'
     end_date = datetime.datetime.now()
     # Set up the stripe user with a discord ID
-    stripe_user = StripeUser(discord_id="discord-id",
+    stripe_user = StripeUser(discord_id="discord-id1",
                              customer_id=stripe_customer_id)
     postgres_db.session.add(stripe_user)
     # Set up the benefit package definition
@@ -45,8 +45,8 @@ def test_product_is_added_after_applied():
     """
     A benefit package of a product should be added to a subscriber
     """
-    stripe_customer_id = 'stripe-id'
-    product_id = 'product-id'
+    stripe_customer_id = 'id1'
+    product_id = 'product-id1'
     end_date = datetime.datetime.now()
     # Set up the subscriber and benefit package definition
     Subscriber(_id=stripe_customer_id, discordId="123", lifetimePaid=0, currency="usd", products=[{
@@ -75,11 +75,11 @@ def test_subscriber_is_created_after_applied():
     """
     While applying a product to a customer, if the equivalent subscriber does not exist, create it
     """
-    stripe_customer_id = 'stripe-id'
-    product_id = 'product-id'
+    stripe_customer_id = 'id2'
+    product_id = 'product-id2'
     end_date = datetime.datetime.now()
     # Set up the stripe user
-    stripe_user = StripeUser(discord_id="discord-id",
+    stripe_user = StripeUser(discord_id="discord-id2",
                              customer_id=stripe_customer_id)
     postgres_db.session.add(stripe_user)
     # Set up the benefit package
