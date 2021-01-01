@@ -11,6 +11,7 @@ class SwappedSubscription(StripeEventBase):
             stripe_event['data']['object']['lines']['data'][0])
         self.new_item = StripeLineItem(
             stripe_event['data']['object']['lines']['data'][1])
+        self.amount_paid = stripe_event['data']['object']['amount_paid']
 
     def apply_benefit_updates(self):
         """
@@ -25,4 +26,5 @@ class SwappedSubscription(StripeEventBase):
             self.new_item.product_id,
             self.new_item.end_timestamp
         )
+        increment_lifetime_paid(self.customer_id, self.amount_paid)
         return

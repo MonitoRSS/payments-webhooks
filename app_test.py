@@ -98,6 +98,8 @@ def test_subscription_created(client, monkeypatch):
     subscriber = Subscriber.objects().get(_id=customer_id)
     assert next(product for product in subscriber.products if product.productId ==
                 product_id) is not StopIteration
+    amount_paid = stripe_event['data']['object']['amount_paid']
+    assert subscriber.lifetimePaid == amount_paid
 
 
 def test_subscription_swapped(client, monkeypatch):
@@ -130,6 +132,8 @@ def test_subscription_swapped(client, monkeypatch):
     subscriber = Subscriber.objects().get(_id=customer_id)
     assert next(product for product in subscriber.products if product.productId ==
                 product_id) is not StopIteration
+    amount_paid = stripe_event['data']['object']['amount_paid']
+    assert subscriber.lifetimePaid == amount_paid
 
 
 def test_subscription_auto_renews(client, monkeypatch):
@@ -161,6 +165,8 @@ def test_subscription_auto_renews(client, monkeypatch):
     subscriber = Subscriber.objects().get(_id=customer_id)
     assert next(product for product in subscriber.products if product.productId ==
                 product_id) is not StopIteration
+    amount_paid = stripe_event['data']['object']['amount_paid']
+    assert subscriber.lifetimePaid == amount_paid
 
 
 def test_subscription_deleted(client, monkeypatch):

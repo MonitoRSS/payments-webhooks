@@ -11,7 +11,7 @@
             "account_name": "MonitoRSS",
             "account_tax_ids": null,
             "amount_due": 0,
-            "amount_paid": 0,
+            "amount_paid": 100,
             "amount_remaining": 0,
             "application_fee_amount": null,
             "attempt_count": 0,
