@@ -163,10 +163,10 @@ def test_subscription_auto_renews(client, monkeypatch):
                 product_id) is not StopIteration
 
 
-def test_subscription_canceled(client, monkeypatch):
+def test_subscription_deleted(client, monkeypatch):
     # Read a dummy event
-    with open(f'{current_path}\\test\\testdata\\3_canceled_subscription'
-              '\\customer.subscription.updated.json') as file:
+    with open(f'{current_path}\\test\\testdata\\6_subscription_deleted'
+              '\\customer.subscription.deleted.json') as file:
         stripe_event = json.load(file)
 
     # Setup the database
@@ -186,3 +186,14 @@ def test_subscription_canceled(client, monkeypatch):
             "refreshRateSeconds": 1
         }
     }]).save()
+    # Set up the API request
+
+    def validate_webhook_payload(request):
+        return stripe_event
+    monkeypatch.setattr('utils.validate_webhook_payload.validate_webhook_payload',
+                        validate_webhook_payload)
+    client.post('/api/webhook', json={
+        "type": "ooglaboo"
+    })
+    subscriber = Subscriber.objects().get(_id=customer_id)
+    assert len(subscriber.products) == 0

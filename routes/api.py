@@ -1,3 +1,4 @@
+from events.DeletedSubscription import DeletedSubscription
 from events.NewSubscription import NewSubscription
 from events.SwappedSubscription import SwappedSubscription
 from events.RenewedSubscription import RenewedSubscription
@@ -53,6 +54,11 @@ def webhook_received():
                 event_data_object['billing_reason'] == 'subscription_cycle':
             print("user paid for a new month for a subscription")
             mapped_event = RenewedSubscription(event)
+            mapped_event.apply_benefit_updates()
+
+        elif event_type == 'customer.subscription.deleted':
+            print("subscription deleted")
+            mapped_event = DeletedSubscription(event)
             mapped_event.apply_benefit_updates()
 
         # A subscription renewal failed, cancel benefits
