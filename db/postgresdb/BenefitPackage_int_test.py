@@ -1,6 +1,10 @@
 from db.postgresdb.BenefitPackage import BenefitPackage
 from db.mongo import mongo_db, MONGODB_DATABASE
-from db.postgres import postgres_db
+from app import postgres_db, app
+
+# Needed for SQLAlchemy to run within a context
+# https://flask-sqlalchemy.palletsprojects.com/en/2.x/contexts/
+app.app_context().push()
 
 stripe_product_id = '123'
 
@@ -25,4 +29,3 @@ def test_get_package_for_product():
         stripe_product_id
     )
     assert found_package is not None
-    pass

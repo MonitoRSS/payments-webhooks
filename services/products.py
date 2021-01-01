@@ -52,7 +52,7 @@ def add_or_create_product_for_customer(customer_id: str, product_id: str, end_da
         subscriber = get_subscriber(customer_id)
         benefits = get_product_benefits(product_id)
     except DoesNotExist:
-        create(customer_id, product_id, end_date)
+        create_product_for_customer(customer_id, product_id, end_date)
     except Exception as e:
         print(e)
         raise e

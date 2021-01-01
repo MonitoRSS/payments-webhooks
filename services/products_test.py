@@ -8,7 +8,11 @@ from services.products import (
     delete_product_from_customer,
     swap_products_for_customer
 )
-from app import postgres_db
+from app import postgres_db, app
+
+# Needed for SQLAlchemy to run within a context
+# https://flask-sqlalchemy.palletsprojects.com/en/2.x/contexts/
+app.app_context().push()
 
 
 def setup_module():
