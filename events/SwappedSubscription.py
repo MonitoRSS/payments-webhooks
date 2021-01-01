@@ -1,7 +1,7 @@
+from services.subscribers import increment_lifetime_paid
 from structs.StripeLineItem import StripeLineItem
 from services.products import swap_products_for_customer
 from events.Base import StripeEventBase
-from datetime import date
 
 
 class SwappedSubscription(StripeEventBase):
