@@ -8,6 +8,9 @@ stripe.api_key = STRIPE_SECRET_API_KEY
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = POSTGRES_URI
+# Disable sqlalchemy warnings about significant overheads
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Register API endpoints
 app.register_blueprint(api, url_prefix='/api')
 
 postgres_db.init_app(app)

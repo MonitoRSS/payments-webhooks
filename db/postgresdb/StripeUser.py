@@ -5,7 +5,7 @@ from db.postgres import postgres_db
 class StripeUser(postgres_db.Model):
     __tablename__ = 'stripe_users'
     __table_args__ = {
-        'useexisting': True
+        'extend_existing': True
     }
     discord_id = postgres_db.Column(postgres_db.String, primary_key=True)
     customer_id = postgres_db.Column(postgres_db.String, nullable=False)

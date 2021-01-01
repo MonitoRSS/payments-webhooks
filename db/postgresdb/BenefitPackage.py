@@ -5,7 +5,7 @@ from db.postgres import postgres_db
 class BenefitPackage(postgres_db.Model):
     __tablename__ = 'benefits_packages'
     __table_args__ = {
-        'useexisting': True
+        'extend_existing': True
     }
     stripe_product_id = postgres_db.Column(
         postgres_db.String,

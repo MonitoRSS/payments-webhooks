@@ -18,7 +18,6 @@ def test_not_found_stripe_customer_subscriber():
         find_stripe_customer_suscriber('random id')
 
 
-@pytest.mark.integration
 def test_found_stripe_customer_subscriber():
     stripe_customer_id = 'stripe-id'
     Subscriber(_id=stripe_customer_id, discordId="123", lifetimePaid=0, currency="usd", products=[{
