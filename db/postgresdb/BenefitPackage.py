@@ -1,5 +1,5 @@
-from db.postgres.StripeUser import StripeUser
-from app import postgres_db
+from db.postgresdb.StripeUser import StripeUser
+from db.postgres import postgres_db
 
 
 class BenefitPackage(postgres_db.Model):

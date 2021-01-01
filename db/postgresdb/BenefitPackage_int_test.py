@@ -1,6 +1,6 @@
-from db.postgres.BenefitPackage import BenefitPackage
+from db.postgresdb.BenefitPackage import BenefitPackage
 from db.mongo import mongo_db, MONGODB_DATABASE
-from app import postgres_db
+from db.postgres import postgres_db
 
 stripe_product_id = '123'
 

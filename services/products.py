@@ -1,6 +1,6 @@
-from db.postgres.StripeUser import StripeUser
+from db.postgresdb.StripeUser import StripeUser
 from db.mongodb.Subscriber import Subscriber, SubscriberProduct
-from db.postgres.BenefitPackage import BenefitPackage
+from db.postgresdb.BenefitPackage import BenefitPackage
 from mongoengine import DoesNotExist
 
 

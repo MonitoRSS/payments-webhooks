@@ -1,5 +1,5 @@
-from db.postgres.StripeUser import StripeUser
-from db.postgres.BenefitPackage import BenefitPackage
+from db.postgresdb.StripeUser import StripeUser
+from db.postgresdb.BenefitPackage import BenefitPackage
 from db.mongo import Subscriber, mongo_db, MONGODB_DATABASE
 import datetime
 from services.products import (

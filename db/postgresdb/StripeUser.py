@@ -1,5 +1,5 @@
 from typing import Union
-from app import postgres_db
+from db.postgres import postgres_db
 
 
 class StripeUser(postgres_db.Model):
