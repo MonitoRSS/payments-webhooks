@@ -53,6 +53,7 @@ def webhook_received():
             mapped_event = RenewedSubscription(event)
             mapped_event.apply_benefit_updates()
 
+        # A subscription was deleted by stripe for whatever reason, such as a cancelled subscription
         elif event_type == 'customer.subscription.deleted':
             print("subscription deleted")
             mapped_event = DeletedSubscription(event)
