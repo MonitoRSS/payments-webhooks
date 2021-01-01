@@ -1,14 +1,15 @@
+from structs.StripeLineItem import StripeLineItem
 from services.products import swap_products_for_customer
 from events.Base import StripeEventBase
-from structs.SubscriptionItem import SubscriptionItem
+from datetime import date
 
 
 class SwappedSubscription(StripeEventBase):
     def __init__(self, stripe_event):
         super().__init__(stripe_event)
-        self.old_item = SubscriptionItem(
+        self.old_item = StripeLineItem(
             stripe_event['data']['object']['lines']['data'][0])
-        self.new_item = SubscriptionItem(
+        self.new_item = StripeLineItem(
             stripe_event['data']['object']['lines']['data'][1])
 
     def apply_benefit_updates(self):

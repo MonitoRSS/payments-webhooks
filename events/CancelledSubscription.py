@@ -7,7 +7,7 @@ class CancelledSubscription(StripeEventBase):
     def __init__(self, stripe_event):
         super().__init__(stripe_event)
         self.cancelled_item = SubscriptionItem(
-            stripe_event['data']['object']['lines']['data'][0])
+            stripe_event['data']['object']['items']['data'][0])
 
     def apply_benefit_updates(self):
         """
