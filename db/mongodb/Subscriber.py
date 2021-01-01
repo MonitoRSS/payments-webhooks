@@ -37,6 +37,9 @@ class SubscriberProduct(EmbeddedDocument):
 
 
 class Subscriber(Document):
+    meta = {
+        'collection': 'subscribers'
+    }
     # _id is the stripe customer id
     _id = StringField(required=True)
     discordId = StringField(required=True)
