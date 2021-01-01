@@ -1,10 +1,9 @@
-from events import (
-    NewSubscription,
-    SwappedSubscription,
-    RenewedSubscription,
-    RestartedCancelledSubscription,
-    CancelledSubscription
-)
+from events.NewSubscription import NewSubscription
+from events.SwappedSubscription import SwappedSubscription
+from events.RenewedSubscription import RenewedSubscription
+from events.RestartedCancelledSubscription import RestartedCancelledSubscription
+from events.CancelledSubscription import CancelledSubscription
+from events.FailedSubscription import FailedSubscription
 from flask import Blueprint, request, jsonify
 import json
 from utils import validate_webhook_payload
@@ -34,27 +33,33 @@ def webhook_received():
     try:
         event_data = event['data']
         event_data_object = event_data['object']
+
         # A subscription was created, apply benefits
         if event_type == 'invoice.paid' and \
                 event_data_object['billing_reason'] == 'subscription_create':
             print("user made a new subscription")
-            NewSubscription(event)
+            mapped_event = NewSubscription(event)
+            mapped_event.apply_benefit_updates()
 
         # A subscription was swapped to a different product/price, swap benefits
         elif event_type == 'invoice.paid' and \
                 event_data_object['billing_reason'] == 'subscription_update':
             print("user changed their subscription plan")
-            SwappedSubscription(event)
+            mapped_event = SwappedSubscription(event)
+            mapped_event.apply_benefit_updates()
 
         # A subscription advanced into a new period, update end date of benefits
         elif event_type == 'invoice.paid' and \
                 event_data_object['billing_reason'] == 'subscription_cycle':
             print("user paid for a new month for a subscription")
-            RenewedSubscription(event)
+            mapped_event = RenewedSubscription(event)
+            mapped_event.apply_benefit_updates()
 
         # A subscription renewal failed, cancel benefits
         elif event_type == 'invoice.payment_failed':
             print("user's payment failed for subscription")
+            mapped_event = FailedSubscription(event)
+            mapped_event.apply_benefit_updates()
 
         # A subscription was cancelled, cancel benefits
         elif event_type == 'customer.subscription.updated' and \
