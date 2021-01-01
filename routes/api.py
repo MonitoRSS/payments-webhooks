@@ -66,14 +66,16 @@ def webhook_received():
                 event_data['previous_attributes']['cancel_at'] is None and \
                 event_data_object['cancel_at'] is not None:
             print("user cancelled subscription")
-            CancelledSubscription(event)
+            mapped_event = CancelledSubscription(event)
+            mapped_event.apply_benefit_updates()
 
         # A subscription was re-subscribed to after it was cancelled, apply benefits
         elif event_type == 'customer.subscription.updated' and\
                 event_data['previous_attributes']['cancel_at'] is not None and \
                 event_data_object['cancel_at'] is None:
             print("user resubscribed to cancelled subscription")
-            RestartedCancelledSubscription(event)
+            mapped_event = RestartedCancelledSubscription(event)
+            mapped_event.apply_benefit_updates()
 
         # Unexpected event type
         else:
