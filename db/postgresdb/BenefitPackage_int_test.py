@@ -1,3 +1,4 @@
+import pytest
 from db.postgresdb.BenefitPackage import BenefitPackage
 from db.mongo import mongo_db, MONGODB_DATABASE
 from app import postgres_db, app
@@ -9,14 +10,10 @@ app.app_context().push()
 stripe_product_id = '123'
 
 
-def setup_module():
+@pytest.fixture(autouse=True)
+def run_around_tests():
     postgres_db.drop_all()
     postgres_db.create_all()
-    mongo_db.drop_database(MONGODB_DATABASE)
-
-
-def teardown_module():
-    postgres_db.drop_all()
     mongo_db.drop_database(MONGODB_DATABASE)
 
 

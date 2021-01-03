@@ -1,3 +1,4 @@
+import pytest
 from db.mongodb.Subscriber import Subscriber
 from db.postgresdb.BenefitPackage import BenefitPackage
 from db.postgresdb.StripeUser import StripeUser
@@ -25,14 +26,10 @@ def monkeypatch():
     return MonkeyPatch()
 
 
-def setup_module():
+@pytest.fixture(autouse=True)
+def run_around_tests():
     postgres_db.drop_all()
     postgres_db.create_all()
-    mongo_db.drop_database(MONGODB_DATABASE)
-
-
-def teardown_module():
-    postgres_db.drop_all()
     mongo_db.drop_database(MONGODB_DATABASE)
 
 
@@ -182,7 +179,7 @@ def test_subscription_deleted(client, monkeypatch):
                              customer_id=customer_id)
     postgres_db.session.add(stripe_user)
     postgres_db.session.commit()
-    Subscriber(_id=customer_id, discordId="discord-id2", lifetimePaid=0, currency="usd", products=[{
+    Subscriber(_id=customer_id, discordId="discord-id2", lifetimePaid=0, products=[{
         "productId": product_id,
         "quantity": 1,
         "endDate": datetime.datetime.now(),

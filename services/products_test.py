@@ -1,3 +1,4 @@
+import pytest
 from db.postgresdb.StripeUser import StripeUser
 from db.postgresdb.BenefitPackage import BenefitPackage
 from db.mongo import Subscriber, mongo_db, MONGODB_DATABASE
@@ -15,14 +16,10 @@ from app import postgres_db, app
 app.app_context().push()
 
 
-def setup_module():
+@pytest.fixture(autouse=True)
+def run_around_tests():
     postgres_db.drop_all()
     postgres_db.create_all()
-    mongo_db.drop_database(MONGODB_DATABASE)
-
-
-def teardown_module():
-    postgres_db.drop_all()
     mongo_db.drop_database(MONGODB_DATABASE)
 
 
@@ -58,7 +55,7 @@ def test_product_is_added_after_applied():
     product_id = 'product-id1'
     end_date = datetime.datetime.now()
     # Set up the subscriber and benefit package definition
-    Subscriber(_id=stripe_customer_id, discordId="123", lifetimePaid=0, currency="usd", products=[{
+    Subscriber(_id=stripe_customer_id, discordId="123", lifetimePaid=0, products=[{
         "productId": "p1",
         "quantity": 1,
         "endDate": datetime.datetime.now(),
@@ -114,7 +111,7 @@ def test_product_is_deleted():
     stripe_customer_id = 'id4'
     product_id = 'product-id4'
     # Set up the subscriber and benefit package definition
-    Subscriber(_id=stripe_customer_id, discordId="1234", lifetimePaid=0, currency="usd", products=[{
+    Subscriber(_id=stripe_customer_id, discordId="1234", lifetimePaid=0, products=[{
         "productId": product_id,
         "quantity": 1,
         "endDate": datetime.datetime.now(),
@@ -140,7 +137,7 @@ def test_product_is_swapped():
     new_product_id = 'product-id5'
     end_date = datetime.datetime.now()
     # Set up the subscriber with the old product
-    Subscriber(_id=stripe_customer_id, discordId="1234", lifetimePaid=0, currency="usd", products=[{
+    Subscriber(_id=stripe_customer_id, discordId="1234", lifetimePaid=0, products=[{
         "productId": old_product_id,
         "quantity": 1,
         "endDate": datetime.datetime.now(),

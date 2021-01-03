@@ -44,7 +44,6 @@ class Subscriber(Document):
     _id = StringField(required=True)
     discordId = StringField(required=True)
     lifetimePaid = FloatField(default=0)
-    currency = StringField(required=True)
     products = ListField(EmbeddedDocumentField(SubscriberProduct))
 
     def __repr__(self):

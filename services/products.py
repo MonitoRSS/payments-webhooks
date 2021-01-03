@@ -41,7 +41,6 @@ def create_product_for_customer(customer_id: str, product_id: str, end_date):
             _id=customer_id,
             discordId=discord_id,
             lifetimePaid=0,
-            currency="usd",
             products=[product_to_add]
         ).save()
     pass
