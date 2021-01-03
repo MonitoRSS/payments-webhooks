@@ -50,5 +50,4 @@ class Subscriber(Document):
         return (f"<Subscriber (_id={self._id}, "
                 f"discordId={self.discordId}, "
                 f"lifetimePaid={self.lifetimePaid}, "
-                f"currency={self.currency}), "
                 f"products={self.products}), >")
