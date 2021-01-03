@@ -68,7 +68,7 @@ def test_unhandled_event(client, monkeypatch):
 
 def test_subscription_created(client, monkeypatch):
     # Read a dummy event
-    with open(f'{current_path}\\test\\testdata\\1_created_subscription\\invoice.paid.json') as file:
+    with open(f'{current_path}/test/testdata/1_created_subscription/invoice.paid.json') as file:
         stripe_event = json.load(file)
 
     # Setup the database
@@ -101,8 +101,8 @@ def test_subscription_created(client, monkeypatch):
 
 def test_subscription_swapped(client, monkeypatch):
     # Read a dummy event
-    with open(f'{current_path}\\test\\testdata\\2a_updated_subscription_higher'
-              '\\invoice.paid.json') as file:
+    with open(f'{current_path}/test/testdata/2a_updated_subscription_higher'
+              '/invoice.paid.json') as file:
         stripe_event = json.load(file)
 
     # Setup the database
@@ -135,7 +135,7 @@ def test_subscription_swapped(client, monkeypatch):
 
 def test_subscription_auto_renews(client, monkeypatch):
     # Read a dummy event
-    with open(f'{current_path}\\test\\testdata\\5_renewed_subscription\\invoice.paid.json') as file:
+    with open(f'{current_path}/test/testdata/5_renewed_subscription/invoice.paid.json') as file:
         stripe_event = json.load(file)
 
     # Setup the database
@@ -168,8 +168,8 @@ def test_subscription_auto_renews(client, monkeypatch):
 
 def test_subscription_deleted(client, monkeypatch):
     # Read a dummy event
-    with open(f'{current_path}\\test\\testdata\\6_subscription_deleted'
-              '\\customer.subscription.deleted.json') as file:
+    with open(f'{current_path}/test/testdata/6_subscription_deleted'
+              '/customer.subscription.deleted.json') as file:
         stripe_event = json.load(file)
 
     # Setup the database
