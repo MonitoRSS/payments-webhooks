@@ -35,4 +35,7 @@ blocks:
           value: '123'
         - name: MONGODB_URI
           value: BAR_6
+      prologue:
+        commands:
+          - ls
     dependencies: []
